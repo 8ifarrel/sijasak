@@ -2,8 +2,8 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
-  --color-kuning: #fec827;
-  --color-biru: #354777;
+  --color-kuning: #fcb717;
+  --color-biru: #223468;
 }
 
 @source "../views";
