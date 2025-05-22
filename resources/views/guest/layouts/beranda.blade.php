@@ -32,12 +32,15 @@
 
 </head>
 
-<body>
+<body class="h-screen flex flex-col">
     @include('guest.components.navbar')
 
-    @yield('slot')
+    <div class="flex-1 min-h-0">
+        @yield('slot')
+    </div>
 
-    @include('guest.components.footer')
+    {{-- Jika ingin footer tetap, bisa gunakan absolute atau hapus baris berikut --}}
+    {{-- @include('guest.components.footer') --}}
 
     {{-- AOS --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js">
@@ -54,8 +57,9 @@
             "esri/views/MapView",
             "esri/widgets/Locate",
             "esri/widgets/ScaleBar",
-            "esri/widgets/Compass"
-        ], function(Map, MapView, Locate, ScaleBar, Compass) {
+            "esri/widgets/Compass",
+            "esri/widgets/Search" // Tambahkan modul Search
+        ], function(Map, MapView, Locate, ScaleBar, Compass, Search) {
             var map = new Map({
                 basemap: "hybrid"
             });
@@ -94,6 +98,17 @@
             });
             view.ui.add(scaleBar, {
                 position: "bottom-left"
+            });
+
+            // Tambahkan widget Search
+            var searchWidget = new Search({
+                view: view,
+                allPlaceholder: "Cari nama jalan atau lokasi",
+                includeDefaultSources: true
+            });
+            view.ui.add(searchWidget, {
+                position: "top-left",
+                index: 0
             });
         });
     </script>
