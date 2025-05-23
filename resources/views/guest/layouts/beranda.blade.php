@@ -89,14 +89,21 @@
 
             var searchWidget = new Search({
                 view: view,
+                container: "searchWidgetContainer",
                 allPlaceholder: "Cari nama jalan atau lokasi",
                 includeDefaultSources: true
             });
-            view.ui.add(searchWidget, { position: "top-left", index: 0 });
 
+            // BasemapGallery untuk desktop (dropdown kanan atas)
             var basemapGallery = new BasemapGallery({
                 view: view,
                 container: "basemapGalleryWidget"
+            });
+
+            // BasemapGallery untuk sidebar (mobile)
+            var basemapGallerySidebar = new BasemapGallery({
+                view: view,
+                container: "basemapGalleryWidgetSidebar"
             });
         });
     </script>
