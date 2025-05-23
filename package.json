@@ -11,6 +11,8 @@
         "vite": "^6.3.5"
     },
     "dependencies": {
+        "@floating-ui/dom": "^1.7.0",
+        "@preline/dropdown": "^3.0.1",
         "@tailwindcss/vite": "^4.1.7",
         "preline": "^3.0.1",
         "tailwindcss": "^4.1.7",

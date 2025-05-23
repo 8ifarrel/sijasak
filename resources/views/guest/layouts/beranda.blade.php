@@ -35,12 +35,9 @@
 <body class="h-screen flex flex-col">
     @include('guest.components.navbar')
 
-    <div class="flex-1 min-h-0">
-        @yield('slot')
-    </div>
+    @yield('slot')
 
-    {{-- Jika ingin footer tetap, bisa gunakan absolute atau hapus baris berikut --}}
-    {{-- @include('guest.components.footer') --}}
+    @include('guest.components.footer')
 
     {{-- AOS --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js">
@@ -58,8 +55,9 @@
             "esri/widgets/Locate",
             "esri/widgets/ScaleBar",
             "esri/widgets/Compass",
-            "esri/widgets/Search" // Tambahkan modul Search
-        ], function(Map, MapView, Locate, ScaleBar, Compass, Search) {
+            "esri/widgets/Search",
+            "esri/widgets/BasemapGallery"
+        ], function(Map, MapView, Locate, ScaleBar, Compass, Search, BasemapGallery) {
             var map = new Map({
                 basemap: "hybrid"
             });
@@ -67,7 +65,7 @@
             var view = new MapView({
                 container: "arcgisMap",
                 map: map,
-                center: [117.1466, -0.5022], // Koordinat Kota Samarinda
+                center: [117.1466, -0.5022],
                 zoom: 12
             });
 
@@ -81,34 +79,24 @@
                     timeout: 15000
                 }
             });
-            view.ui.add(locateWidget, {
-                position: "bottom-right"
-            });
+            view.ui.add(locateWidget, { position: "bottom-right" });
 
-            var compass = new Compass({
-                view: view
-            });
-            view.ui.add(compass, {
-                position: "bottom-left"
-            });
+            var compass = new Compass({ view: view });
+            view.ui.add(compass, { position: "bottom-left" });
 
-            var scaleBar = new ScaleBar({
-                view: view,
-                unit: "metric"
-            });
-            view.ui.add(scaleBar, {
-                position: "bottom-left"
-            });
+            var scaleBar = new ScaleBar({ view: view, unit: "metric" });
+            view.ui.add(scaleBar, { position: "bottom-left" });
 
-            // Tambahkan widget Search
             var searchWidget = new Search({
                 view: view,
                 allPlaceholder: "Cari nama jalan atau lokasi",
                 includeDefaultSources: true
             });
-            view.ui.add(searchWidget, {
-                position: "top-left",
-                index: 0
+            view.ui.add(searchWidget, { position: "top-left", index: 0 });
+
+            var basemapGallery = new BasemapGallery({
+                view: view,
+                container: "basemapGalleryWidget"
             });
         });
     </script>
