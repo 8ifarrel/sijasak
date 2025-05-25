@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->decimal('longitude', 10, 7);
             $table->decimal('latitude', 10, 7);
             $table->enum('tingkat_keparahan', ['ringan', 'sedang', 'berat']);
+            $table->boolean('sudah_diperbaiki')->default(false);
             $table->timestamps();
         });
     }
