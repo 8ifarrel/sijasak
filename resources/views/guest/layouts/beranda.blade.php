@@ -20,9 +20,6 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    {{-- AOS --}}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-
     {{-- ArcGIS --}}
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
 
@@ -39,13 +36,6 @@
 
     @include('guest.components.footer')
 
-    {{-- AOS --}}
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js">
-        AOS.init({
-            duration: 800,
-        });
-    </script>
-
     {{-- ArcGIS --}}
     <script src="https://js.arcgis.com/4.28/"></script>
     <script>
@@ -56,8 +46,10 @@
             "esri/widgets/ScaleBar",
             "esri/widgets/Compass",
             "esri/widgets/Search",
-            "esri/widgets/BasemapGallery"
-        ], function(Map, MapView, Locate, ScaleBar, Compass, Search, BasemapGallery) {
+            "esri/widgets/BasemapGallery",
+            "esri/Graphic",
+            "esri/layers/GraphicsLayer"
+        ], function(Map, MapView, Locate, ScaleBar, Compass, Search, BasemapGallery, Graphic, GraphicsLayer) {
             var map = new Map({
                 basemap: "hybrid"
             });
@@ -105,6 +97,94 @@
                 view: view,
                 container: "basemapGalleryWidgetSidebar"
             });
+
+            // --- Tambahan untuk marker jalan rusak ---
+            var graphicsLayer = new GraphicsLayer();
+            map.add(graphicsLayer);
+
+            // Icon marker berdasarkan tingkat keparahan
+            var iconUrls = {
+                ringan: "{{ asset('icons/rusak-ringan.svg') }}",
+                sedang: "{{ asset('icons/rusak-sedang.svg') }}",
+                berat: "{{ asset('icons/rusak-berat.svg') }}"
+            };
+
+            // Ganti dengan fungsi reverse geocoding menggunakan OpenStreetMap
+            async function getNamaJalan(lat, lon) {
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`);
+                    const data = await response.json();
+                    return data.display_name || "Lokasi tidak diketahui";
+                } catch (error) {
+                    console.error("Error fetching address:", error);
+                    return "Nama jalan tidak ditemukan";
+                }
+            }
+
+            // Ambil data jalan rusak dari backend
+            fetch('/api/jalan-rusak')
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(function(jalan) {
+                        var point = {
+                            type: "point",
+                            longitude: jalan.longitude,
+                            latitude: jalan.latitude
+                        };
+
+                        var markerSymbol = {
+                            type: "picture-marker",
+                            url: iconUrls[jalan.tingkat_keparahan] || iconUrls.ringan,
+                            width: "32px",
+                            height: "32px"
+                        };
+
+                        var graphic = new Graphic({
+                            geometry: point,
+                            symbol: markerSymbol,
+                            attributes: jalan,
+                            zIndex: 999
+                        });
+
+                        // Reverse geocoding untuk nama jalan
+                        graphic.popupTemplate = {
+                            title: "Memuat nama jalan...",
+                            content: function() {
+                                var container = document.createElement("div");
+                                container.innerHTML = `
+                                    <div><b>Deskripsi:</b> ${jalan.deskripsi}</div>
+                                    <div><b>Longitude:</b> ${jalan.longitude}</div>
+                                    <div><b>Latitude:</b> ${jalan.latitude}</div>
+                                    <div><b>Waktu dibuat:</b> ${jalan.created_at}</div>
+                                    <div><b>Foto:</b><br>
+                                        <img src="/storage/${jalan.foto}" alt="Foto Jalan Rusak" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;">
+                                    </div>
+                                `;
+
+                                // Dapatkan nama jalan
+                                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${jalan.latitude}&lon=${jalan.longitude}&zoom=18`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        // Ambil nama jalan dari address
+                                        const address = data.address || {};
+                                        const namaJalan = address.road || 
+                                                        address.pedestrian || 
+                                                        address.footway || 
+                                                        address.path || 
+                                                        "Nama jalan tidak diketahui";
+                                        view.popup.title = namaJalan;
+                                    })
+                                    .catch(() => {
+                                        view.popup.title = "Nama jalan tidak ditemukan";
+                                    });
+
+                                return container;
+                            }
+                        };
+
+                        graphicsLayer.add(graphic);
+                    });
+                });
         });
     </script>
 </body>

@@ -49,16 +49,16 @@
         <div class="font-semibold mb-2">Filter Jalan Rusak</div>
         <div class="flex flex-col gap-2">
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-yellow-500" id="jalanRusakKecil" checked>
-            <span>Rusak Kecil</span>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakRingan" checked>
+            <span><i class="fa-solid fa-circle-exclamation text-yellow-400"></i> Rusak Ringan</span>
           </label>
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-yellow-500" id="jalanRusakSedang" checked>
-            <span>Rusak Sedang</span>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSedang" checked>
+            <span><i class="fa-solid fa-triangle-exclamation text-orange-400"></i> Rusak Sedang</span>
           </label>
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-yellow-500" id="jalanRusakBesar" checked>
-            <span>Rusak Besar</span>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakBerat" checked>
+            <span><i class="fa-solid fa-triangle-exclamation text-red-600"></i> Rusak Berat</span>
           </label>
         </div>
       </div>
@@ -99,16 +99,16 @@
             <div id="sidebar-accordion-filter-content" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden ps-8" role="region" aria-labelledby="sidebar-accordion-filter">
               <div class="pt-2 flex flex-col gap-2">
                 <label class="inline-flex items-center gap-2">
-                  <input type="checkbox" class="form-checkbox accent-yellow-500" id="sidebarJalanRusakKecil" checked>
-                  <span>Rusak Kecil</span>
+                  <input type="checkbox" class="form-checkbox accent-yellow-500" id="sidebarJalanRusakRingan" checked>
+                  <span><i class="fa-solid fa-circle-exclamation text-yellow-400"></i> Rusak Ringan</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
                   <input type="checkbox" class="form-checkbox accent-yellow-500" id="sidebarJalanRusakSedang" checked>
-                  <span>Rusak Sedang</span>
+                  <span><i class="fa-solid fa-triangle-exclamation text-orange-400"></i> Rusak Sedang</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                  <input type="checkbox" class="form-checkbox accent-yellow-500" id="sidebarJalanRusakBesar" checked>
-                  <span>Rusak Besar</span>
+                  <input type="checkbox" class="form-checkbox accent-yellow-500" id="sidebarJalanRusakBerat" checked>
+                  <span><i class="fa-solid fa-triangle-exclamation text-red-600"></i> Rusak Berat</span>
                 </label>
               </div>
             </div>
