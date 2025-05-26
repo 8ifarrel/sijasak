@@ -14,11 +14,13 @@ class JalanRusak extends Model
         'latitude',
         'tingkat_keparahan',
         'foto',
+        'sudah_diperbaiki',
     ];
 
     protected $casts = [
         'longitude' => 'float',
         'latitude' => 'float',
         'tingkat_keparahan' => 'string',
+        'sudah_diperbaiki' => 'boolean',
     ];
 }

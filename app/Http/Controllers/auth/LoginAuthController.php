@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginAuthController extends Controller
 {
-    public function showLoginForm()
+    public function index()
     {
         return view('auth.pages.login.index', [
             'meta_description' => 'Login Admin Sijasak',
@@ -27,7 +27,8 @@ class LoginAuthController extends Controller
 
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/'); // Ganti dengan dashboard admin jika ada
+            return redirect()->route('admin.dashboard.index')
+                ->with('success', 'Selamat datang di Admin Panel Sijasak, ' . Auth::user()->name . '!');
         }
 
         return back()->withErrors([
@@ -40,6 +41,6 @@ class LoginAuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return redirect()->route('auth.login.index');
     }
 }
