@@ -49,15 +49,15 @@
         <div class="font-semibold mb-2">Filter Jalan Rusak</div>
         <div class="flex flex-col gap-2">
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakRingan" checked>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakRinganDropdown" checked>
             <span><i class="fa-solid fa-circle-exclamation text-yellow-400"></i> Rusak Ringan</span>
           </label>
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSedang" checked>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSedangDropdown" checked>
             <span><i class="fa-solid fa-triangle-exclamation text-orange-400"></i> Rusak Sedang</span>
           </label>
           <label class="inline-flex items-center gap-2">
-            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakBerat" checked>
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakBeratDropdown" checked>
             <span><i class="fa-solid fa-triangle-exclamation text-red-600"></i> Rusak Berat</span>
           </label>
         </div>
@@ -99,15 +99,15 @@
             <div id="sidebar-accordion-filter-content" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden ps-8" role="region" aria-labelledby="sidebar-accordion-filter">
               <div class="pt-2 flex flex-col gap-2">
                 <label class="inline-flex items-center gap-2">
-                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakRingan" checked>
+                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakRinganCollapse" checked>
                   <span><i class="fa-solid fa-circle-exclamation text-yellow-400"></i> Rusak Ringan</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSedang" checked>
+                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSedangCollapse" checked>
                   <span><i class="fa-solid fa-triangle-exclamation text-orange-400"></i> Rusak Sedang</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakBerat" checked>
+                  <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakBeratCollapse" checked>
                   <span><i class="fa-solid fa-triangle-exclamation text-red-600"></i> Rusak Berat</span>
                 </label>
               </div>

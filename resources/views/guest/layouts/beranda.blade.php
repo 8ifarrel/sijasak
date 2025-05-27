@@ -141,33 +141,27 @@
 
             // Function to filter markers based on checkbox state
             function filterMarkers() {
-                // Get checkbox states from dropdown and collapse filters
-                const dropdownRingan = document.querySelector('#jalanRusakRinganDropdown')?.checked ?? true;
-                const dropdownSedang = document.querySelector('#jalanRusakSedangDropdown')?.checked ?? true;
-                const dropdownBerat = document.querySelector('#jalanRusakBeratDropdown')?.checked ?? true;
-                
-                const collapseRingan = document.querySelector('#jalanRusakRinganCollapse')?.checked ?? true;
-                const collapseSedang = document.querySelector('#jalanRusakSedangCollapse')?.checked ?? true;
-                const collapseBerat = document.querySelector('#jalanRusakBeratCollapse')?.checked ?? true;
+                // Get checkbox states directly from the clicked checkbox
+                const showRingan = document.querySelector('#jalanRusakRinganDropdown')?.checked ?? 
+                                 document.querySelector('#jalanRusakRinganCollapse')?.checked ?? true;
+                const showSedang = document.querySelector('#jalanRusakSedangDropdown')?.checked ?? 
+                                 document.querySelector('#jalanRusakSedangCollapse')?.checked ?? true;
+                const showBerat = document.querySelector('#jalanRusakBeratDropdown')?.checked ?? 
+                                document.querySelector('#jalanRusakBeratCollapse')?.checked ?? true;
 
-                // Sync checkbox states between dropdown and collapse
-                const showRingan = dropdownRingan && collapseRingan;
-                const showSedang = dropdownSedang && collapseSedang;
-                const showBerat = dropdownBerat && collapseBerat;
-
-                // Sync the checkboxes
-                ['Ringan', 'Sedang', 'Berat'].forEach(type => {
+                // Sync the checkboxes between dropdown and collapse
+                const syncCheckboxes = (type, isChecked) => {
                     const dropdownCb = document.querySelector(`#jalanRusak${type}Dropdown`);
                     const collapseCb = document.querySelector(`#jalanRusak${type}Collapse`);
-                    if (dropdownCb && collapseCb) {
-                        const checked = type === 'Ringan' ? showRingan : 
-                                      type === 'Sedang' ? showSedang : showBerat;
-                        dropdownCb.checked = checked;
-                        collapseCb.checked = checked;
-                    }
-                });
+                    if (dropdownCb) dropdownCb.checked = isChecked;
+                    if (collapseCb) collapseCb.checked = isChecked;
+                };
 
-                // Filter graphics
+                syncCheckboxes('Ringan', showRingan);
+                syncCheckboxes('Sedang', showSedang);
+                syncCheckboxes('Berat', showBerat);
+
+                // Update marker visibility
                 graphicsLayer.graphics.forEach(function(graphic) {
                     const keparahan = graphic.attributes.tingkat_keparahan;
                     switch(keparahan) {
@@ -184,17 +178,23 @@
                 });
             }
 
-            // Add event listeners to checkboxes (both desktop and mobile)
-            ['jalanRusakRingan', 'jalanRusakSedang', 'jalanRusakBerat'].forEach(id => {
-                const desktopCheckbox = document.querySelector(`#filterJalanContainer #${id}`);
-                const mobileCheckbox = document.querySelector(`#sidebar-accordion-filter-content #${id}`);
+            // Add event listeners to all checkboxes
+            ['Ringan', 'Sedang', 'Berat'].forEach(type => {
+                const dropdownCb = document.querySelector(`#jalanRusak${type}Dropdown`);
+                const collapseCb = document.querySelector(`#jalanRusak${type}Collapse`);
                 
-                if (desktopCheckbox) {
-                    desktopCheckbox.addEventListener('change', filterMarkers);
-                }
-                if (mobileCheckbox) {
-                    mobileCheckbox.addEventListener('change', filterMarkers);
-                }
+                [dropdownCb, collapseCb].forEach(cb => {
+                    if (cb) {
+                        cb.addEventListener('change', (e) => {
+                            // Update the other checkbox first
+                            const targetType = e.target.id.includes('Dropdown') ? 'Collapse' : 'Dropdown';
+                            const otherCb = document.querySelector(`#jalanRusak${type}${targetType}`);
+                            if (otherCb) otherCb.checked = e.target.checked;
+                            
+                            filterMarkers();
+                        });
+                    }
+                });
             });
 
             // Ambil data jalan rusak dari backend
