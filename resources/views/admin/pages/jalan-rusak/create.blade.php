@@ -349,7 +349,7 @@
                 confirmPilihLokasiBtn.disabled = false;
 
                 // Update koordinat info
-                selectedCoordsInfo.textContent = `Longitude: ${lon}, Latitude: ${lat}`;
+                selectedCoordsInfo.innerHTML = `<b>Longitude</b>: ${lon} <br> <b>Latitude</b>: ${lat}`;
 
                 // Remove previous marker
                 if (markerGraphic) graphicsLayer.remove(markerGraphic);
