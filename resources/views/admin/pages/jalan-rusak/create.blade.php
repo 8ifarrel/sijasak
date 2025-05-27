@@ -33,8 +33,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-1h10v1a1 1 0 01-1 1h-4z" />
                   </svg>
-                  <p class="mb-1 text-sm text-gray-500"><span class="font-semibold">Klik untuk
-                      upload</span> atau drag & drop</p>
+                  <p class="mb-1 text-sm text-gray-500 font-semibold">Klik untuk upload</p>
                   <p class="text-xs text-gray-400">PNG, JPG, JPEG (max 2MB)</p>
                 </div>
                 <img id="foto-preview" src="#" alt="Preview"
@@ -124,7 +123,7 @@
     </div>
   </div>
 
-  {{-- Modal Peta Pilih Lokasi (Preline Style) --}}
+  {{-- Modal Peta Pilih Lokasi --}}
   <div id="modal-pilih-lokasi-peta"
     class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-x-hidden overflow-y-auto pointer-events-none"
     role="dialog" tabindex="-1" aria-labelledby="modal-pilih-lokasi-peta-label">
@@ -348,10 +347,8 @@
                 };
                 confirmPilihLokasiBtn.disabled = false;
 
-                // Update koordinat info
                 selectedCoordsInfo.innerHTML = `<b>Longitude</b>: ${lon} <br> <b>Latitude</b>: ${lat}`;
 
-                // Remove previous marker
                 if (markerGraphic) graphicsLayer.remove(markerGraphic);
 
                 markerGraphic = new Graphic({

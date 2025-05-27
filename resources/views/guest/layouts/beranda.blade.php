@@ -23,10 +23,23 @@
     {{-- ArcGIS --}}
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
 
+
     {{-- Tailwind CSS & Preline UI --}}
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 
+    {{-- Viewer.js --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.js"></script>
+
+    <style>
+      /* Sembunyikan tombol arrow kiri-kanan pada Viewer.js */
+      .viewer-arrow,
+      .viewer-next,
+      .viewer-prev {
+        display: none !important;
+      }
+    </style>
 </head>
 
 <body class="h-screen flex flex-col">
@@ -38,6 +51,7 @@
 
     {{-- ArcGIS --}}
     <script src="https://js.arcgis.com/4.28/"></script>
+
     <script>
         // Fungsi untuk format tanggal: huruf pertama hari dan bulan kapital, sisanya kecil
         function formatTanggalIndonesia(datetimeStr) {
@@ -234,7 +248,9 @@
                                     <div><b>Latitude:</b> ${jalan.latitude}</div>
                                     <div><b>Waktu dibuat:</b> ${formatTanggalIndonesia(jalan.created_at)}</div>
                                     <div><b>Foto:</b><br>
-                                        <img src="/storage/${jalan.foto}" alt="Foto Jalan Rusak" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;">
+                                        <div class="foto-viewer-popup" style="display:inline-block;">
+                                            <img src="/storage/${jalan.foto}" alt="Foto Jalan Rusak" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;">
+                                        </div>
                                     </div>
                                 `;
 
@@ -254,6 +270,32 @@
                                     .catch(() => {
                                         view.popup.title = "Nama jalan tidak ditemukan";
                                     });
+
+                                // Inisialisasi Viewer.js pada gambar popup setelah popup dibuka
+                                setTimeout(function() {
+                                    var popupFotoWrappers = container.querySelectorAll('.foto-viewer-popup');
+                                    popupFotoWrappers.forEach(function(wrapper) {
+                                        if (!wrapper.viewerInstance) {
+                                            wrapper.viewerInstance = new Viewer(wrapper, {
+                                                navbar: false,
+                                                toolbar: true,
+                                                title: false,
+                                                tooltip: false,
+                                                movable: false,
+                                                zoomable: true,
+                                                scalable: false,
+                                                transition: true,
+                                                fullscreen: false
+                                            });
+                                        }
+                                        var img = wrapper.querySelector('img');
+                                        if (img) {
+                                            img.addEventListener('click', function() {
+                                                wrapper.viewerInstance.show();
+                                            });
+                                        }
+                                    });
+                                }, 100);
 
                                 return container;
                             }

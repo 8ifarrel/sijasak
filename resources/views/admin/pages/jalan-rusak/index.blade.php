@@ -1,7 +1,7 @@
 @extends('admin.layouts.jalan-rusak')
 
 @section('slot')
-<div id="arcgisMap" class="w-full h-full">
+<div id="arcgisMap" class="w-full h-full" style="min-height:400px;">
   <div class="absolute top-4 left-4 z-20">
     {{-- Search --}}
     <div class="flex items-center bg-white border border-gray-300 shadow">
@@ -103,7 +103,7 @@
     </div>
   </div>
 
-  <div class="w-full p-4 rounded-lg shadow-xl sm:p-8 mt-4">
+  <div class="w-full p-4 rounded-lg shadow-xl sm:p-8 my-4">
     <div class="relative overflow-x-auto text-sm md:text-base">
       <table id="jalan-rusak-table" class="stripe hover row-border table-auto w-full" style="width:100% !important">
         <thead>
@@ -152,27 +152,9 @@
               @endif
             </td>
             <td>
-              <button class="rounded-lg bg-biru px-3 py-2 text-xs font-medium text-white"
-                onclick="openModal('foto_{{ $item->id }}')">
-                <i class="fa-solid fa-eye"></i>
-              </button>
-
-              {{-- Modal foto --}}
-              <div id="foto_{{ $item->id }}" class="hidden fixed inset-0 z-50">
-                <div class="fixed inset-0 bg-black opacity-50"></div>
-                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 max-w-2xl w-full">
-                  <div class="bg-white rounded-lg shadow-sm">
-                    <div class="flex items-center justify-between p-4 border-b">
-                      <h3 class="text-xl font-semibold">Foto Jalan Rusak</h3>
-                      <button onclick="closeModal('foto_{{ $item->id }}')" class="text-gray-400 hover:text-gray-900">
-                        <i class="fa-solid fa-times"></i>
-                      </button>
-                    </div>
-                    <div class="p-4">
-                      <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto Jalan Rusak" class="w-full rounded-lg">
-                    </div>
-                  </div>
-                </div>
+              <div class="foto-viewer-wrapper" style="display:inline-block;">
+                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto Jalan Rusak" class="rounded-lg foto-viewer-img"
+                  style="width:60px;max-height:60px;object-fit:cover;cursor:pointer;">
               </div>
             </td>
             <td>{{ $item->longitude }}, {{ $item->latitude }}</td>
@@ -345,6 +327,34 @@
           next: "Selanjutnya",
           previous: "Sebelumnya"
         }
+      }
+    });
+
+    // Inisialisasi Viewer.js untuk semua gambar di tabel
+    document.querySelectorAll('.foto-viewer-wrapper').forEach(function(wrapper) {
+      // Hindari inisialisasi ganda
+      if (!wrapper.viewerInstance) {
+        wrapper.viewerInstance = new Viewer(wrapper, {
+          navbar: false,
+          toolbar: true,
+          title: false,
+          tooltip: false,
+          movable: false,
+          zoomable: true,
+          scalable: false,
+          transition: true,
+          fullscreen: false,
+          viewed() {
+            // Tidak perlu
+          }
+        });
+      }
+      // Pastikan klik pada gambar memunculkan viewer
+      const img = wrapper.querySelector('img');
+      if (img) {
+        img.addEventListener('click', function() {
+          wrapper.viewerInstance.show();
+        });
       }
     });
   });
