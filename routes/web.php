@@ -7,31 +7,52 @@ use App\Http\Controllers\admin\DashboardAdminController;
 use App\Http\Controllers\admin\JalanRusakAdminController;
 use App\Http\Controllers\Api\JalanRusakAPIController;
 
-Route::get('/', [BerandaGuestController::class, 'index'])
-    ->name('guest.beranda.index');
-
+/**
+ * API Jalan Rusak
+ */
 Route::get('/api/jalan-rusak', [JalanRusakAPIController::class, 'index'])
-    ->name('api.jalan-rusak');
+	->name('api.jalan-rusak');
 
-Route::get('/login', [LoginAuthController::class, 'index'])
-    ->name('auth.login.index');
-Route::post('/login', [LoginAuthController::class, 'login'])
-    ->name('auth.login.submit');
-Route::post('/logout', [LoginAuthController::class, 'logout'])
-    ->name('auth.logout');
+/**
+ * Beranda
+ */
+Route::get('/', [BerandaGuestController::class, 'index'])
+	->name('guest.beranda.index');
+
+/**
+ * Authentication
+ */
+Route::name('auth.')->group(function () {
+	Route::get('/login', [LoginAuthController::class, 'index'])
+		->name('login.index');
+	Route::post('/login', [LoginAuthController::class, 'login'])
+		->name('login.submit');
+	Route::post('/logout', [LoginAuthController::class, 'logout'])
+		->name('logout');
+});
 
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', [DashboardAdminController::class, 'index'])
-        ->name('admin.dashboard.index');
+	Route::prefix('admin')->name('admin.')->group(function () {
+		/**
+		 * Dashboard
+		 */
+		Route::get('/dashboard', [DashboardAdminController::class, 'index'])
+			->name('dashboard.index');
 
-    Route::get('/admin/jalan-rusak', [JalanRusakAdminController::class, 'index'])
-        ->name('admin.jalan-rusak.index');
-    Route::get('/admin/jalan-rusak/create', [JalanRusakAdminController::class, 'create'])
-        ->name('admin.jalan-rusak.create');
-    Route::post('/admin/jalan-rusak', [JalanRusakAdminController::class, 'store'])
-        ->name('admin.jalan-rusak.store');
-    Route::get('/admin/jalan-rusak/{id}/edit', [JalanRusakAdminController::class, 'edit'])
-        ->name('admin.jalan-rusak.edit');
-    Route::put('/admin/jalan-rusak/{id}', [JalanRusakAdminController::class, 'update'])
-        ->name('admin.jalan-rusak.update');
+		/**
+		 * Jalan Rusak
+		 */
+		Route::prefix('jalan-rusak')->name('jalan-rusak.')->group(function () {
+			Route::get('/', [JalanRusakAdminController::class, 'index'])
+				->name('index');
+			Route::get('/create', [JalanRusakAdminController::class, 'create'])
+				->name('create');
+			Route::post('/', [JalanRusakAdminController::class, 'store'])
+				->name('store');
+			Route::get('/{id}/edit', [JalanRusakAdminController::class, 'edit'])
+				->name('edit');
+			Route::put('/{id}', [JalanRusakAdminController::class, 'update'])
+				->name('update');
+		});
+	});
 });
