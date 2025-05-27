@@ -48,7 +48,7 @@
             @include('admin.components.aside')
         </div>
 
-        <div class="flex-initial w-full sm:w-[calc(100vw_-_16rem)] h-[calc(100vh_-_68px)] absolute bottom-0 right-0">
+        <div class="flex-initial w-full sm:w-[calc(100vw_-_16rem)] h-[calc(100vh_-_64px)] sm:h-[calc(100vh_-_68px)] absolute bottom-0 right-0">
             @yield('slot')
         </div>
     </div>

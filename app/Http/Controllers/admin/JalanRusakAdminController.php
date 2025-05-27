@@ -41,10 +41,8 @@ class JalanRusakAdminController extends Controller
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
             'tingkat_keparahan' => 'required|in:ringan,sedang,berat',
-            'sudah_diperbaiki' => 'required|boolean',
         ]);
 
-        // Simpan foto
         $fotoPath = $request->file('foto')->store('jalan_rusak', 'public');
 
         JalanRusak::create([

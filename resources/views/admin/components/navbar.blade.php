@@ -1,9 +1,9 @@
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
-  <div class="px-3 py-3 lg:px-5 lg:pl-3">
+  <div class="px-3 py-3 lg:px-5">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
         <button
-          class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+          class="inline-flex items-center sm:p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
           aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-sidebar-offcanvas"
           aria-label="Toggle navigation" data-hs-overlay="#hs-sidebar-offcanvas" type="button">
 
@@ -21,14 +21,14 @@
         </button>
 
         <a class="flex ms-2 md:me-24" href="https://flowbite.com">
-          <img class="h-11 me-3 my-auto" src="{{ asset('logos/sijasak.png') }}" alt="{{ config('app.name_short') }}" />
+          <img class="h-9 sm:h-11 me-3 my-auto" src="{{ asset('logos/sijasak.png') }}" alt="{{ config('app.name_short') }}" />
 
           <div class="flex flex-col justify-center">
-            <span class="text-md font-semibold whitespace-nowrap leading-none">
+            <span class="text-lg sm:text-xl font-semibold whitespace-nowrap leading-none">
               Admin Panel
             </span>
 
-            <span class="text-2xl font-semibold whitespace-nowrap leading-none">
+            <span class="text-xl sm:text-2xl font-semibold whitespace-nowrap leading-none">
               {{ config('app.name_short') }}
             </span>
           </div>
@@ -38,10 +38,10 @@
       <div class="flex items-center ms-3">
         <div class="hs-dropdown relative inline-flex">
           <button id="hs-dropdown-user" type="button"
-            class="hs-dropdown-toggle flex items-center gap-x-2 text-sm font-medium border-gray-200 text-gray-800 disabled:opacity-50 disabled:pointer-events-none px-3 py-2"
+            class="hs-dropdown-toggle flex items-center sm:gap-x-2 text-sm font-medium border-gray-200 text-gray-800 disabled:opacity-50 disabled:pointer-events-none sm:px-3 sm:py-2"
             aria-haspopup="menu" aria-expanded="false" aria-label="User menu">
             <i class="fa-solid fa-circle-user fa-xl"></i>
-            <svg class="hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            <svg class="hidden sm:block hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
               <path d="m6 9 6 6 6-6" />

@@ -5,8 +5,8 @@
   <div class="absolute top-4 left-4 z-20">
     {{-- Search --}}
     <div class="flex items-center bg-white border border-gray-300 shadow">
-      {{-- Hamburger: hanya md ke bawah --}}
-      <button type="button" class="block md:hidden px-2 border-e border-gray-300" aria-label="Open sidebar"
+      {{-- Hamburger: hanya lg ke bawah --}}
+      <button type="button" class="block lg:hidden px-2 border-e border-gray-300" aria-label="Open sidebar"
         data-hs-overlay="#hs-sidebar-basic-usage">
         <i class="fa-solid fa-bars" style="color: #808080;"></i>
       </button>
@@ -14,8 +14,8 @@
     </div>
   </div>
 
-  {{-- Basemap & Filter: hanya md ke atas --}}
-  <div class="absolute top-4 right-4 z-20 gap-2 hidden md:flex">
+  {{-- Basemap & Filter: hanya lg ke atas --}}
+  <div class="absolute top-4 right-4 z-20 gap-2 hidden lg:flex">
     {{-- Basemap --}}
     <div class="hs-dropdown relative inline-flex [--placement:bottom-right] [--auto-close:false]">
       <button id="toggleBasemapGallery" type="button"
@@ -91,14 +91,14 @@
       Daftar Jalan Rusak
     </h5>
     
-    <div class="flex gap-4 items-center">
-      <label class="inline-flex items-center gap-2">
+    <div class="flex gap-2 md:gap-4 items-center">
+      <label class="flex items-center gap-1.5 flex-nowrap">
         <input type="radio" name="visualisasiPage" value="peta" class="form-radio accent-kuning" checked>
-        <span class="text-sm"><i class="fa-solid fa-map-location-dot"></i> Peta</span>
+        <div class="text-sm flex items-center gap-x-0.5"><i class="fa-solid fa-map-location-dot"></i> Peta</div>
       </label>
-      <label class="inline-flex items-center gap-2">
+      <label class="inline-flex items-center gap-1.5 flex-nowrap">
         <input type="radio" name="visualisasiPage" value="tabel" class="form-radio accent-kuning">
-        <span class="text-sm"><i class="fa-solid fa-table-list"></i> Tabel</span>
+        <div class="text-sm flex items-center gap-x-0.5"><i class="fa-solid fa-table-list"></i> Tabel</div>
       </label>
     </div>
   </div>
@@ -191,9 +191,9 @@
   </div>
 </div>
 
-{{-- Sidebar: hanya md ke bawah --}}
+{{-- Sidebar: hanya lg ke bawah --}}
 <div id="hs-sidebar-basic-usage"
-  class="hs-overlay md:hidden [--auto-close:md] w-64 hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform h-full hidden fixed top-0 start-0 bottom-0 z-60 bg-white border-e border-gray-200"
+  class="hs-overlay lg:hidden [--auto-close:lg] w-64 hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform h-full hidden fixed top-0 start-0 bottom-0 z-60 bg-white border-e border-gray-200"
   role="dialog" tabindex="-1" aria-label="Sidebar">
   <div class="relative flex flex-col h-full max-h-full ">
     <!-- Header -->
