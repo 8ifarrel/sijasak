@@ -8,10 +8,18 @@ use App\Models\JalanRusak;
 
 class JalanRusakAPIController extends Controller
 {
-    public function index()
-    {
-        return response()->json(
-            JalanRusak::select('id', 'deskripsi', 'longitude', 'latitude', 'tingkat_keparahan', 'foto', 'created_at')->get()
-        );
-    }
+	public function index()
+	{
+		return response()->json(
+			JalanRusak::select(
+				'id',
+				'deskripsi',
+				'longitude',
+				'latitude',
+				'tingkat_keparahan',
+				'foto',
+				'created_at',
+			)->get()
+		);
+	}
 }
