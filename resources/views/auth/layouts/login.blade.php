@@ -24,9 +24,25 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 
+    <script>
+        function setViewportHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('load', setViewportHeight);
+        setViewportHeight();
+    </script>
+
+    <style>
+        body,.h-screen-fix {
+            height: calc(var(--vh, 1vh) * 100);
+        }
+    </style>
 </head>
 
-<body class="h-screen flex flex-col">
+<body class="h-screen-fix flex flex-col">
     @yield('slot')
 </body>
 

@@ -2,9 +2,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
-  --color-kuning: #fcb717;
-  --color-biru: #223468;
+    --color-kuning: #fcb717;
+    --color-biru: #223468;
 }
+
+@source inline("sm:fixed");
+@source inline("mt-[63px]");
+@source inline("sm:mt-[68px]");
+@source inline("sm:right-0");
 
 @source "../views";
 

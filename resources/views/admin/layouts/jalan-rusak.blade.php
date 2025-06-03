@@ -48,25 +48,30 @@
       display: none !important;
     }
   </style>
+
+  <script>
+    function setViewportHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('load', setViewportHeight);
+    setViewportHeight();
+  </script>
+
+  <style>
+    .h-screen-fix {
+      height: calc(var(--vh, 1vh) * 100);
+    }
+  </style>
 </head>
 
-<body class="h-screen flex flex-col">
-  <div>
-    @include('admin.components.navbar')
-  </div>
+<body class="h-screen-fix flex flex-col">
+  @include('admin.components.navbar')
+  @include('admin.components.aside')
 
-
-  <div class="flex ">
-    {{-- Sidebar: hanya md ke atas --}}
-    <div class="flex-auto">
-      @include('admin.components.aside')
-    </div>
-
-    <div
-      class="flex-initial w-full sm:w-[calc(100vw_-_16rem)] h-[calc(100vh_-_64px)] sm:h-[calc(100vh_-_68px)] absolute bottom-0 right-0">
-      @yield('slot')
-    </div>
-  </div>
+  @yield('slot')
 
   {{-- DataTables --}}
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
@@ -181,7 +186,7 @@
       async function getNamaJalan(lat, lon) {
         try {
           const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`);
+            `/api/reverse-geocode?lat=${lat}&lon=${lon}`);
           const data = await response.json();
           return data.display_name || "Lokasi tidak diketahui";
         } catch (error) {
@@ -192,13 +197,14 @@
 
       // Function to filter markers based on checkbox state
       function filterMarkers() {
-        // Get checkbox states directly from the clicked checkbox
         const showRingan = document.querySelector('#jalanRusakRinganDropdown')?.checked ??
           document.querySelector('#jalanRusakRinganCollapse')?.checked ?? true;
         const showSedang = document.querySelector('#jalanRusakSedangDropdown')?.checked ??
           document.querySelector('#jalanRusakSedangCollapse')?.checked ?? true;
         const showBerat = document.querySelector('#jalanRusakBeratDropdown')?.checked ??
           document.querySelector('#jalanRusakBeratCollapse')?.checked ?? true;
+        const showSudahDiperbaiki = document.querySelector('#jalanRusakSudahDiperbaikiDropdown')?.checked ??
+          document.querySelector('#jalanRusakSudahDiperbaikiCollapse')?.checked ?? true;
 
         // Sync the checkboxes between dropdown and collapse
         const syncCheckboxes = (type, isChecked) => {
@@ -211,42 +217,51 @@
         syncCheckboxes('Ringan', showRingan);
         syncCheckboxes('Sedang', showSedang);
         syncCheckboxes('Berat', showBerat);
+        syncCheckboxes('SudahDiperbaiki', showSudahDiperbaiki);
 
         // Update marker visibility
         graphicsLayer.graphics.forEach(function(graphic) {
           const keparahan = graphic.attributes.tingkat_keparahan;
-          switch (keparahan) {
-            case 'ringan':
-              graphic.visible = showRingan;
-              break;
-            case 'sedang':
-              graphic.visible = showSedang;
-              break;
-            case 'berat':
-              graphic.visible = showBerat;
-              break;
+          const sudahDiperbaiki = !!graphic.attributes.sudah_diperbaiki;
+          if (sudahDiperbaiki) {
+            graphic.visible = showSudahDiperbaiki;
+          } else {
+            switch (keparahan) {
+              case 'ringan':
+                graphic.visible = showRingan;
+                break;
+              case 'sedang':
+                graphic.visible = showSedang;
+                break;
+              case 'berat':
+                graphic.visible = showBerat;
+                break;
+            }
           }
         });
       }
 
       // Add event listeners to all checkboxes
-      ['Ringan', 'Sedang', 'Berat'].forEach(type => {
-        const dropdownCb = document.querySelector(`#jalanRusak${type}Dropdown`);
-        const collapseCb = document.querySelector(`#jalanRusak${type}Collapse`);
+      function addFilterCheckboxListeners() {
+        ['Ringan', 'Sedang', 'Berat', 'SudahDiperbaiki'].forEach(type => {
+          const dropdownCb = document.querySelector(`#jalanRusak${type}Dropdown`);
+          const collapseCb = document.querySelector(`#jalanRusak${type}Collapse`);
 
-        [dropdownCb, collapseCb].forEach(cb => {
-          if (cb) {
-            cb.addEventListener('change', (e) => {
-              // Update the other checkbox first
-              const targetType = e.target.id.includes('Dropdown') ? 'Collapse' : 'Dropdown';
-              const otherCb = document.querySelector(`#jalanRusak${type}${targetType}`);
-              if (otherCb) otherCb.checked = e.target.checked;
-
-              filterMarkers();
-            });
-          }
+          [dropdownCb, collapseCb].forEach(cb => {
+            if (cb) {
+              cb.addEventListener('change', (e) => {
+                const targetType = e.target.id.includes('Dropdown') ? 'Collapse' : 'Dropdown';
+                const otherCb = document.querySelector(`#jalanRusak${type}${targetType}`);
+                if (otherCb) otherCb.checked = e.target.checked;
+                filterMarkers();
+              });
+            }
+          });
         });
-      });
+      }
+
+      // Jalankan listener setelah DOM siap dan filter sudah ditambahkan
+      setTimeout(addFilterCheckboxListeners, 200);
 
       // Ambil data jalan rusak dari backend
       fetch('/api/jalan-rusak')
@@ -259,12 +274,27 @@
               latitude: jalan.latitude
             };
 
-            var markerSymbol = {
-              type: "picture-marker",
-              url: iconUrls[jalan.tingkat_keparahan] || iconUrls.ringan,
-              width: "32px",
-              height: "32px"
-            };
+            // --- Perubahan: marker hijau bulat jika sudah_diperbaiki ---
+            var markerSymbol;
+            if (jalan.sudah_diperbaiki) {
+              markerSymbol = {
+                type: "simple-marker",
+                style: "circle",
+                color: [21, 128, 61, 1],
+                size: "26px",
+                outline: {
+                  color: [255, 255, 255, 1],
+                  width: 1
+                }
+              };
+            } else {
+              markerSymbol = {
+                type: "picture-marker",
+                url: iconUrls[jalan.tingkat_keparahan] || iconUrls.ringan,
+                width: "28px",
+                height: "28px"
+              };
+            }
 
             var graphic = new Graphic({
               geometry: point,
@@ -300,7 +330,7 @@
 
                 // Dapatkan nama jalan
                 fetch(
-                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${jalan.latitude}&lon=${jalan.longitude}&zoom=18`
+                    `/api/reverse-geocode?lat=${jalan.latitude}&lon=${jalan.longitude}`
                   )
                   .then(res => res.json())
                   .then(data => {
@@ -366,6 +396,7 @@
 
           const mapView = document.getElementById('arcgisMap');
           const tableView = document.getElementById('dataTable');
+          const dataContainer = document.getElementById('dataContainer');
 
           if (value === 'peta') {
             window.location.reload();
@@ -376,17 +407,57 @@
               mapView.style.height = '0px';
               mapView.style.display = 'none';
               mapView.classList.add('hidden');
+              dataContainer.classList.add('overflow-hidden');
             }
             if (tableView) {
               tableView.style.visibility = 'visible';
               tableView.style.height = '';
               tableView.style.display = 'block';
               tableView.classList.remove('hidden');
+              dataContainer.classList.remove('overflow-hidden');
             }
           }
         });
       });
   </script>
+
+  {{-- ===== Tambahkan checkbox Sudah Diperbaiki ke dropdown dan sidebar filter ===== --}}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dropdown (desktop)
+      let filterDropdown = document.getElementById('filterJalanContainer');
+      if (filterDropdown) {
+        let filterList = filterDropdown.querySelector('.flex.flex-col.gap-2');
+        if (filterList && !document.getElementById('jalanRusakSudahDiperbaikiDropdown')) {
+          let label = document.createElement('label');
+          label.className = "inline-flex items-center gap-2";
+          label.innerHTML = `
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSudahDiperbaikiDropdown" checked>
+            <span><i class="fa-solid fa-circle text-green-700" style="color: #008236"></i> Sudah Diperbaiki</span>
+          `;
+          filterList.appendChild(label);
+        }
+      }
+
+      // Sidebar (mobile)
+      let sidebarFilter = document.getElementById('sidebar-accordion-filter-content');
+      if (sidebarFilter) {
+        let filterList = sidebarFilter.querySelector('.flex.flex-col.gap-2');
+        if (filterList && !document.getElementById('jalanRusakSudahDiperbaikiCollapse')) {
+          let label = document.createElement('label');
+          label.className = "inline-flex items-center gap-2";
+          label.innerHTML = `
+            <input type="checkbox" class="form-checkbox accent-kuning" id="jalanRusakSudahDiperbaikiCollapse" checked>
+            <span><i class="fa-solid fa-circle text-green-700" style="color: #008236"></i> Sudah Diperbaiki</span>
+          `;
+          filterList.appendChild(label);
+        }
+      }
+    });
+  </script>
+
+  {{-- ===== END Tambahan checkbox Sudah Diperbaiki ===== --}}
 </body>
 
 </html>

@@ -40,14 +40,18 @@
 							<dl class="grid max-w-screen-xl grid-cols-1 gap-8 mx-auto text-gray-900 sm:grid-cols-2">
 								{{-- Jumlah jalan rusak --}}
 								<div class="text-center block max-w-sm p-3 bg-white rounded-lg shadow-lg border-s-4 border-white border-l-red-600  hover:bg-gray-100">
-									<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">3</h5>
-									<p class="font-normal text-gray-700 dark:text-gray-400">Jumlah jalan rusak</p>
+									<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+										{{ $total_jalan_rusak ?? 0 }}
+									</h5>
+									<p class="font-normal text-gray-700 dark:text-gray-400">Jumlah jalan yang sekarang rusak</p>
 								</div>
 
                                 {{-- Jumlah jalan telah diperbaiki --}}
 								<div class="text-center block max-w-sm p-3 bg-white rounded-lg shadow-lg border-s-4 border-white border-l-green-700  hover:bg-gray-100">
-									<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">0</h5>
-									<p class="font-normal text-gray-700 dark:text-gray-400">Jumlah jalan telah diperbaiki</p>
+									<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+										{{ $total_jalan_diperbaiki ?? 0 }}
+									</h5>
+									<p class="font-normal text-gray-700 dark:text-gray-400">Jumlah jalan yang telah diperbaiki</p>
 								</div>
 							</dl>
 						</div>

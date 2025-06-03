@@ -1,3 +1,4 @@
+<div class="flex-auto w-full sm:w-[calc(100vw_-_16rem)] h-[calc(100vh_-_63px)] sm:h-[calc(100vh_-_68px)] absolute bottom-0 right-0">
 <aside
   id="hs-sidebar-offcanvas"
   class="hs-overlay hs-overlay-open:translate-x-0 -translate-x-full fixed bg-white top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform duration-300 border-r border-gray-200 sm:translate-x-0"
@@ -48,3 +49,4 @@
     </ul>
   </div>
 </aside>
+</div>

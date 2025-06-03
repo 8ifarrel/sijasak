@@ -4,11 +4,11 @@
         <img src="{{ asset('logos/sijasak.png') }}" class="h-8 sm:h-11 w-auto" alt="{{ config('app.name_short') }}">
           <div class="ms-2 sm:ms-3 flex flex-col justify-center my-auto">
             <span class="text-sm sm:text-lg font-semibold whitespace-nowrap leading-none">
-              Sistem Informasi Jalan Rusak
+              {{ config('app.name') }}
             </span>
 
             <span class="text-lg sm:text-2xl font-semibold whitespace-nowrap leading-none">
-              Kota Samarinda
+              {{ config('app.location') }}
             </span>
           </div>
       </a>

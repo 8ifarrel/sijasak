@@ -1,7 +1,8 @@
 @extends('admin.layouts.jalan-rusak')
 
 @section('slot')
-<div id="arcgisMap" class="w-full h-full" style="min-height:400px;">
+<div id="dataContainer" class="flex-auto w-full sm:w-[calc(100vw_-_16rem)] h-[calc(var(--vh,_1vh)*100_-_63px)] sm:h-[calc(100vh_-_68px)] absolute bottom-0 right-0 overflow-hidden">
+<div id="arcgisMap" class="w-full h-full" style="min-height: calc(var(--vh, 1vh) * 100 - 63px);">
   <div class="absolute top-4 left-4 z-20">
     {{-- Search --}}
     <div class="flex items-center bg-white border border-gray-300 shadow">
@@ -303,6 +304,7 @@
   </div>
 </div>
 {{-- End Sidebar --}}
+</div>
 
 <script>
   $(document).ready(function() {
