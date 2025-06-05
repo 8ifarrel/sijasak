@@ -1,7 +1,7 @@
 @extends('auth.layouts.login')
 
 @section('slot')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br p-5">
+<div class="h-screen-fix flex items-center justify-center bg-gradient-to-br p-5">
   <form method="POST" action="{{ route('auth.login.submit') }}" class="w-full max-w-sm space-y-8">
     @csrf
     <div class="text-center mb-6">

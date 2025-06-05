@@ -18,6 +18,7 @@ class JalanRusakAPIController extends Controller
 				'latitude',
 				'tingkat_keparahan',
 				'foto',
+				'sudah_diperbaiki',
 				'created_at',
 			)->get()
 		);

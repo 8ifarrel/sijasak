@@ -10,10 +10,14 @@
     <meta name="description" content="{{ $meta_description }}" />
 
     <title>
-        {{ $page_title }} | Admin Panel {{ config('app.name') }} ({{ config('app.name_short') }}) {{ config('app.location') }}
+        {{ $page_title }} | Admin Panel {{ config('app.name') }} ({{ config('app.name_short') }})
+        {{ config('app.location') }}
     </title>
 
     <link rel="icon" type="image/x-icon" href="" />
+
+    {{-- Disallow bot crawler --}}
+    <meta name="robots" content="noindex, nofollow">
 
     {{-- Fontawesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -27,7 +31,7 @@
 </head>
 
 <body>
-    @include('admin.components.navbar') 
+    @include('admin.components.navbar')
 
     @include('admin.components.aside')
 
