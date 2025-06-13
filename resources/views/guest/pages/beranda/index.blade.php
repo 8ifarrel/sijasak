@@ -9,6 +9,9 @@
       display: none !important;
     }
   </style>
+  {{-- SplideJS --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 
   {{-- Manual dynamic vh (tidak semua browser mendukung unit dvh) --}}
   <script>
@@ -292,9 +295,9 @@
 
       // Icon marker jalan rusak
       var iconUrls = {
-        ringan: "{{ asset('icons/rusak-ringan.svg') }}",
-        sedang: "{{ asset('icons/rusak-sedang.svg') }}",
-        berat: "{{ asset('icons/rusak-berat.svg') }}",
+        ringan: "{{ asset('icons/belum-diperbaiki/rusak-ringan.svg') }}",
+        sedang: "{{ asset('icons/belum-diperbaiki/rusak-sedang.svg') }}",
+        berat: "{{ asset('icons/belum-diperbaiki/rusak-berat.svg') }}",
       };
 
       // Reverse geoccode
@@ -395,22 +398,45 @@
               title: "Memuat nama jalan...",
               content: function() {
                 var container = document.createElement("div");
+                // SPLIDEJS CAROUSEL
+                let fotoHtml = '';
+                if (Array.isArray(jalan.foto) && jalan.foto.length > 0) {
+                  if (jalan.foto.length > 1) {
+                    const splideId = 'splide-popup-foto-' + jalan.id;
+                    fotoHtml = `
+                      <div class="splide" id="${splideId}">
+                        <div class="splide__track">
+                          <ul class="splide__list">
+                            ${jalan.foto.map(f =>
+                              `<li class="splide__slide flex items-center justify-center h-full">
+                                <img src="${f}" alt="Foto Jalan Rusak" class="block mx-auto max-w-full max-h-full object-contain">
+                              </li>`
+                            ).join('')}
+                          </ul>
+                        </div>
+                      </div>
+                    `;
+                  } else {
+                    fotoHtml = `<img src="${jalan.foto[0]}" alt="Foto Jalan Rusak" class="h-[100px]" />`;
+                  }
+                } else {
+                  fotoHtml = '<span class="text-xs text-gray-400">Tidak ada foto</span>';
+                }
                 container.innerHTML = `
-									<div><b>Deskripsi:</b> ${jalan.deskripsi}</div>
-									<div><b>Longitude:</b> ${jalan.longitude}</div>
-									<div><b>Latitude:</b> ${jalan.latitude}</div>
-									<div><b>Waktu dibuat:</b> ${formatTanggalIndonesia(jalan.created_at)}</div>
-									<div><b>Foto:</b><br>
-											<div class="foto-viewer-popup" style="display:inline-block;">
-													<img src="/storage/${jalan.foto}" alt="Foto Jalan Rusak" style="max-width:200px;max-height:150px;border-radius:8px;margin-top:4px;cursor:pointer;">
-											</div>
-									</div>
+                  <div><b>Deskripsi:</b> ${jalan.deskripsi}</div>
+                  <div><b>Longitude:</b> ${jalan.longitude}</div>
+                  <div><b>Latitude:</b> ${jalan.latitude}</div>
+                  <div><b>Waktu dibuat:</b> ${formatTanggalIndonesia(jalan.created_at)}</div>
+                  <div><b>Foto:</b><br>
+                    <div class="foto-viewer-popup">
+                      ${fotoHtml}
+                    </div>
+                  </div>
                 `;
 
                 fetch(`/api/reverse-geocode?lat=${jalan.latitude}&lon=${jalan.longitude}`)
                   .then(res => res.json())
                   .then(data => {
-                    // Ambil nama jalan dari alamat lokasi
                     const address = data.address || {};
                     const namaJalan = address.road ||
                       address.pedestrian ||
@@ -423,8 +449,22 @@
                     view.popup.title = "Nama jalan tidak ditemukan";
                   });
 
-                // Konfigurasi Viewer.js
                 setTimeout(function() {
+                  // Inisialisasi SplideJS jika ada carousel
+                  if (Array.isArray(jalan.foto) && jalan.foto.length > 1) {
+                    const splideId = 'splide-popup-foto-' + jalan.id;
+                    const splideEl = container.querySelector('#' + splideId);
+                    if (splideEl && window.Splide) {
+                      new Splide(splideEl, {
+                        type: 'loop',
+                        perPage: 1,
+                        height: '100px',
+                        width: '250px',
+                        drag: true,
+                      }).mount();
+                    }
+                  }
+                  // Inisialisasi Viewer.js untuk semua gambar di popup
                   var popupFotoWrappers = container.querySelectorAll('.foto-viewer-popup');
                   popupFotoWrappers.forEach(function(wrapper) {
                     if (!wrapper.viewerInstance) {
@@ -440,12 +480,11 @@
                         fullscreen: false
                       });
                     }
-                    var img = wrapper.querySelector('img');
-                    if (img) {
+                    wrapper.querySelectorAll('img').forEach(function(img) {
                       img.addEventListener('click', function() {
                         wrapper.viewerInstance.show();
                       });
-                    }
+                    });
                   });
                 }, 100);
 

@@ -10,6 +10,7 @@
 @source inline("mt-[63px]");
 @source inline("sm:mt-[68px]");
 @source inline("sm:right-0");
+@source inline("grid-cols-4");
 
 @source "../views";
 

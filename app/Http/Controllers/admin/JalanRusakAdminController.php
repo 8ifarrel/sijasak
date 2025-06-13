@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JalanRusak;
+use App\Models\FotoJalanRusak;
 use Illuminate\Support\Facades\Storage;
 
 class JalanRusakAdminController extends Controller
@@ -37,21 +38,37 @@ class JalanRusakAdminController extends Controller
     {
         $validated = $request->validate([
             'deskripsi' => 'required|string',
-            'foto' => 'required|image|max:2048',
+            'foto' => 'required|array|min:1',
+            'foto.*' => 'image|max:2048',
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
             'tingkat_keparahan' => 'required|in:ringan,sedang,berat',
         ]);
 
-        $fotoPath = $request->file('foto')->store('jalan_rusak', 'public');
-
-        JalanRusak::create([
+        $jalanRusak = JalanRusak::create([
             'deskripsi' => $validated['deskripsi'],
-            'foto' => $fotoPath,
             'longitude' => $validated['longitude'],
             'latitude' => $validated['latitude'],
             'tingkat_keparahan' => $validated['tingkat_keparahan'],
         ]);
+
+        foreach ($request->file('foto') as $fotoFile) {
+            $fotoModel = new FotoJalanRusak([
+                'jalan_rusak_id' => $jalanRusak->id,
+                'foto' => '', // <-- tambahkan ini agar tidak error
+            ]);
+            $fotoModel->save();
+
+            $ext = $fotoFile->getClientOriginalExtension();
+            $path = "jalan-rusak/{$jalanRusak->id}/{$fotoModel->id}." . $ext;
+            Storage::disk('public')->putFileAs(
+                "jalan-rusak/{$jalanRusak->id}",
+                $fotoFile,
+                "{$fotoModel->id}.{$ext}"
+            );
+            $fotoModel->foto = $path;
+            $fotoModel->save();
+        }
 
         return redirect()->route('admin.jalan-rusak.index')->with('success', 'Data jalan rusak berhasil ditambahkan.');
     }
@@ -75,23 +92,55 @@ class JalanRusakAdminController extends Controller
 
         $validated = $request->validate([
             'deskripsi' => 'required|string',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|max:2048',
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
             'tingkat_keparahan' => 'required|in:ringan,sedang,berat',
             'sudah_diperbaiki' => 'required|boolean',
         ]);
 
-        if ($request->hasFile('foto')) {
-            // Hapus foto lama
-            Storage::disk('public')->delete($jalan_rusak->foto);
-            // Simpan foto baru
-            $validated['foto'] = $request->file('foto')->store('jalan_rusak', 'public');
-        }
+        $jalan_rusak->update([
+            'deskripsi' => $validated['deskripsi'],
+            'longitude' => $validated['longitude'],
+            'latitude' => $validated['latitude'],
+            'tingkat_keparahan' => $validated['tingkat_keparahan'],
+            'sudah_diperbaiki' => $validated['sudah_diperbaiki'],
+        ]);
 
-        $jalan_rusak->update($validated);
+        if ($request->hasFile('foto')) {
+            foreach ($request->file('foto') as $fotoFile) {
+                $fotoModel = new FotoJalanRusak([
+                    'jalan_rusak_id' => $jalan_rusak->id,
+                    'foto' => '', 
+                ]);
+                $fotoModel->save();
+
+                $ext = $fotoFile->getClientOriginalExtension();
+                $path = "jalan-rusak/{$jalan_rusak->id}/{$fotoModel->id}." . $ext;
+                Storage::disk('public')->putFileAs(
+                    "jalan-rusak/{$jalan_rusak->id}",
+                    $fotoFile,
+                    "{$fotoModel->id}.{$ext}"
+                );
+                $fotoModel->foto = $path;
+                $fotoModel->save();
+            }
+        }
 
         return redirect()->route('admin.jalan-rusak.index')
             ->with('success', 'Data jalan rusak berhasil diperbarui.');
+    }
+
+    public function deleteFoto($jalan_rusak_id, $foto_id)
+    {
+        $foto = FotoJalanRusak::where('jalan_rusak_id', $jalan_rusak_id)->where('id', $foto_id)->firstOrFail();
+        // Hapus file dari storage jika ada
+        if ($foto->foto && Storage::disk('public')->exists($foto->foto)) {
+            Storage::disk('public')->delete($foto->foto);
+        }
+        $foto->delete();
+
+        return back()->with('success', 'Foto berhasil dihapus.');
     }
 }

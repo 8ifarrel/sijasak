@@ -6,6 +6,8 @@ use App\Http\Controllers\auth\LoginAuthController;
 use App\Http\Controllers\admin\DashboardAdminController;
 use App\Http\Controllers\admin\JalanRusakAdminController;
 use App\Http\Controllers\Api\JalanRusakAPIController;
+use Illuminate\Support\Facades\Http;
+use App\Http\Middleware\RedirectIfAuthenticated;
 
 /**
  * API Jalan Rusak
@@ -16,7 +18,7 @@ Route::get('/api/jalan-rusak', [JalanRusakAPIController::class, 'index'])
 /**
  * API Reverse Geocode
  */
-Route::get('/api/reverse-geocode', function(\Illuminate\Http\Request $request) {
+Route::get('/api/reverse-geocode', function (\Illuminate\Http\Request $request) {
 	$lat = $request->query('lat');
 	$lon = $request->query('lon');
 
@@ -43,14 +45,16 @@ Route::get('/', [BerandaGuestController::class, 'index'])
 /**
  * Authentication
  */
-Route::name('auth.')->group(function () {
-	Route::get('/login', [LoginAuthController::class, 'index'])
-		->name('login.index');
-	Route::post('/login', [LoginAuthController::class, 'login'])
-		->name('login.submit');
-	Route::post('/logout', [LoginAuthController::class, 'logout'])
-		->name('logout');
-});
+Route::name('auth.')
+	->middleware(RedirectIfAuthenticated::class)
+	->group(function () {
+		Route::get('/login', [LoginAuthController::class, 'index'])
+			->name('login.index');
+		Route::post('/login', [LoginAuthController::class, 'login'])
+			->name('login.submit');
+	});
+Route::post('/logout', [LoginAuthController::class, 'logout'])
+	->name('auth.logout');
 
 Route::middleware('auth')->group(function () {
 	Route::prefix('admin')->name('admin.')->group(function () {
@@ -74,6 +78,9 @@ Route::middleware('auth')->group(function () {
 				->name('edit');
 			Route::put('/{id}', [JalanRusakAdminController::class, 'update'])
 				->name('update');
+			// Tambahkan route delete foto
+			Route::delete('/{jalan_rusak}/foto/{foto}', [JalanRusakAdminController::class, 'deleteFoto'])
+				->name('foto.delete');
 		});
 	});
 });

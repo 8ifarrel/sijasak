@@ -11,16 +11,31 @@ class JalanRusakAPIController extends Controller
 	public function index()
 	{
 		return response()->json(
-			JalanRusak::select(
-				'id',
-				'deskripsi',
-				'longitude',
-				'latitude',
-				'tingkat_keparahan',
-				'foto',
-				'sudah_diperbaiki',
-				'created_at',
-			)->get()
+			JalanRusak::with('foto:id,jalan_rusak_id,foto')
+				->select(
+					'id',
+					'deskripsi',
+					'longitude',
+					'latitude',
+					'tingkat_keparahan',
+					'sudah_diperbaiki',
+					'created_at',
+				)
+				->get()
+				->map(function ($item) {
+					return [
+						'id' => $item->id,
+						'deskripsi' => $item->deskripsi,
+						'longitude' => $item->longitude,
+						'latitude' => $item->latitude,
+						'tingkat_keparahan' => $item->tingkat_keparahan,
+						'sudah_diperbaiki' => $item->sudah_diperbaiki,
+						'created_at' => $item->created_at,
+						'foto' => $item->foto->pluck('foto')->map(function ($f) {
+							return asset('storage/' . $f);
+						})->values(),
+					];
+				})
 		);
 	}
 }

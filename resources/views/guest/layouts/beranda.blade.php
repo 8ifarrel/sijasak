@@ -2,50 +2,53 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-  <meta charset="utf-8" />
+    <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-  <meta name="description" content="{{ $meta_description }}" />
+    <meta name="description" content="{{ $meta_description }}" />
 
-  <title>
-    {{ $page_title }} | {{ config('app.name') }} ({{ config('app.name_short') }}) {{ config('app.location') }}
-  </title>
+    <title>
+        {{ $page_title }} | {{ config('app.name') }} ({{ config('app.name_short') }}) {{ config('app.location') }}
+    </title>
 
-  <link rel="icon" type="image/x-icon" href="" />
+    <link rel="icon" type="image/x-icon" href="" />
 
-  {{-- Fontawesome --}}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{-- Disallow bot crawler --}}
+    <meta name="robots" content="noindex, nofollow">
 
-  {{-- ArcGIS --}}
-  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
+    {{-- Fontawesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  {{-- Tailwind CSS & Preline UI --}}
-  @vite('resources/css/app.css')
-  @vite('resources/js/app.js')
+    {{-- ArcGIS --}}
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
 
-  {{-- Viewer.js --}}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.js"></script>
+    {{-- Tailwind CSS & Preline UI --}}
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
 
-  @yield('document.head')
+    {{-- Viewer.js --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.3/viewer.min.js"></script>
+
+    @yield('document.head')
 </head>
 
 <body class="h-screen-fix flex flex-col">
-  @include('guest.components.navbar')
+    @include('guest.components.navbar')
 
-  @yield('slot')
+    @yield('slot')
 
-  @include('guest.components.footer')
+    @include('guest.components.footer')
 
-  {{-- ArcGIS --}}
-  <script src="https://js.arcgis.com/4.28/"></script>
+    {{-- ArcGIS --}}
+    <script src="https://js.arcgis.com/4.28/"></script>
 
-  @yield('document.end')
+    @yield('document.end')
 </body>
 
 </html>
